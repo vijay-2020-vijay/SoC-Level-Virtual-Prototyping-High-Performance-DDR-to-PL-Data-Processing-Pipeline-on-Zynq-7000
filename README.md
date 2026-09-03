@@ -3,6 +3,15 @@
 An end-to-end SoC-level virtual prototyping framework for the Xilinx Zynq-7000 architecture. This project demonstrates a high-throughput DDR-to-PL data processing pipeline using **AXI CDMA**, **dual-port BRAM controllers**, and **custom hardware-software handshaking** — fully verified inside a software co-simulation environment powered by **Renode** and **Verilator**.
 
 ---
+##  Full Project Download
+
+All RTL source files, simulation results the full project presentation, and reference documentation are packaged together.
+**[📁 Download Full Project (Google Drive)](https://drive.google.com/file/d/1ZAVyFyPXAbd8olpM0ASr3neKbUt1IoKs/view?usp=sharing)**
+
+
+
+
+
 
 ## 📌 System Architecture & Data Flow
 
