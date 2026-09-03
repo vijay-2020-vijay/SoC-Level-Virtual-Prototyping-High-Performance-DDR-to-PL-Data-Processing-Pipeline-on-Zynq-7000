@@ -13,7 +13,7 @@ All RTL source files, simulation results the full project presentation, and refe
 
 
 
-## 📌 System Architecture & Data Flow
+##  System Architecture & Data Flow
 
 The system coordinates memory transfers and hardware acceleration across the Zynq Processing System (PS — ARM Cortex-A9) and Programmable Logic (PL):
 
