@@ -17,36 +17,7 @@ All RTL source files, simulation results the full project presentation, and refe
 
 The system coordinates memory transfers and hardware acceleration across the Zynq Processing System (PS — ARM Cortex-A9) and Programmable Logic (PL):
 
-```
-+-----------------------------------------------------------------------------------+
-|                                 PROCESSING SYSTEM (PS)                            |
-|   [ Embedded C Application ] ---> [ AXI GPIO Control ] ---> [ DDR Memory Base ]   |
-+------------------------------------------+----------------------------------------+
-                                            |
-                 +--------------------------+--------------------------+
-                 |                                                     |
-                 v                                                     v
-+-------------------------------+                     +-------------------------------+
-|        AXI CDMA ENGINE        |                     |      CUSTOM HANDSHAKE (GPIO)  |
-+---------------+---------------+                     +---------------+---------------+
-                |                                                     |
-(64-bit Port A) v                                                     v (State Signals)
-+-------------------------------+                     +-------------------------------+
-|  BRAM0 (DDR Buffer Storage)   |                     |     PL PROCESSING ENGINE      |
-+---------------+---------------+                     |   (32-bit Async Port B)       |
-                | (32-bit Read)                        |  Custom Math Transformation   |
-                +-------------------------------------->|                              |
-                                                        |  (State Machine s0 -> s4)     |
-(64-bit Port A) ^                                     +---------------+---------------+
-+---------------+---------------+                                     |
-|  BRAM1 (Result Storage Space) |<------------------------------------+ (32-bit Write)
-+---------------+---------------+
-                |
-(64-bit Read)   v
-+-------------------------------+
-|     DESTINATION DDR SPACE     | ---> [ Verification & Cache Invalidation ]
-+-------------------------------+
-```
+![SoC System Architecture Diagram](ful_Soc_diafram.png)
 
 ---
 
