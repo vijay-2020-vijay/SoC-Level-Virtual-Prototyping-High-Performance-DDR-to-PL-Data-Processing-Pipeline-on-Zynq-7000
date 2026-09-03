@@ -17,7 +17,7 @@ All RTL source files, simulation results the full project presentation, and refe
 
 The system coordinates memory transfers and hardware acceleration across the Zynq Processing System (PS — ARM Cortex-A9) and Programmable Logic (PL):
 
-![SoC System Architecture Diagram](ful_Soc_diagram1.png)
+![SoC System Architecture Diagram](ul_Soc_diagram1.png)
 
 ---
 
