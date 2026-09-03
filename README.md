@@ -135,14 +135,14 @@ PS FCLK_RESET0_N  → proc_sys_reset_0 → synchronized resets (peripheral_reset
 
 | File Name | Description |
 |---|---|
-| `CMakeLists.txt` | CMake build configuration script for compiling RTL sources with Verilator into a Renode shared library plugin. |
-| `DDR_BRAM_DDR_2_2.elf` | Bare-metal executable compiled via Vitis containing application logic and embedded `.hex` data parser. |
-| `DDR_BRAM_HEX.hex` | Raw input dataset containing 630 hex-formatted 64-bit entries embedded into the PS program memory section. |
-| `PL_DDR_BRAM.v` | Core RTL processing module implementing asymmetric BRAM control, state machine logic, and PS-PL handshaking. |
-| `Zynq_DDR_BRAM_wrapper.xsa` | Exported Vivado hardware platform specification containing memory map address definitions and IP metadata. |
-| `sim_main.cpp` | Verilator C++ simulation testbench wrapper enabling socket bridge communication between RTL and Renode. |
-| `top_axi_wrapper.v` | Top-level Verilog wrapper interfacing the PL processing core to AXI-Lite and AXI-Full interconnects. |
-| `Zynq_DDR_BRAM_images/` | Folder containing experimental execution logs, terminal verification traces, and GTKWave waveform dumps. |
+| [`CMakeLists.txt`](https://github.com/vijay-2020-vijay/SoC-Level-Virtual-Prototyping-High-Performance-DDR-to-PL-Data-Processing-Pipeline-on-Zynq-7000/blob/main/CMakeLists.txt) | CMake build configuration script for compiling RTL sources with Verilator into a Renode shared library plugin. |
+| [`DDR_BRAM_DDR_2_2.elf`](https://github.com/vijay-2020-vijay/SoC-Level-Virtual-Prototyping-High-Performance-DDR-to-PL-Data-Processing-Pipeline-on-Zynq-7000/blob/main/DDR_BRAM_DDR_2_2.elf) | Bare-metal executable compiled via Vitis containing application logic and embedded `.hex` data parser. |
+| [`DDR_BRAM_HEX.hex`](https://github.com/vijay-2020-vijay/SoC-Level-Virtual-Prototyping-High-Performance-DDR-to-PL-Data-Processing-Pipeline-on-Zynq-7000/blob/main/DDR_BRAM_HEX.hex) | Raw input dataset containing 630 hex-formatted 64-bit entries embedded into the PS program memory section. |
+| [`PL_DDR_BRAM.v`](https://github.com/vijay-2020-vijay/SoC-Level-Virtual-Prototyping-High-Performance-DDR-to-PL-Data-Processing-Pipeline-on-Zynq-7000/blob/main/PL_DDR_BRAM.v) | Core RTL processing module implementing asymmetric BRAM control, state machine logic, and PS-PL handshaking. |
+| [`Zynq_DDR_BRAM_wrapper.xsa`](https://github.com/vijay-2020-vijay/SoC-Level-Virtual-Prototyping-High-Performance-DDR-to-PL-Data-Processing-Pipeline-on-Zynq-7000/blob/main/Zynq_DDR_BRAM_wrapper.xsa) | Exported Vivado hardware platform specification containing memory map address definitions and IP metadata. |
+| [`sim_main.cpp`](https://github.com/vijay-2020-vijay/SoC-Level-Virtual-Prototyping-High-Performance-DDR-to-PL-Data-Processing-Pipeline-on-Zynq-7000/blob/main/sim_main.cpp) | Verilator C++ simulation testbench wrapper enabling socket bridge communication between RTL and Renode. |
+| [`top_axi_wrapper.v`](https://github.com/vijay-2020-vijay/SoC-Level-Virtual-Prototyping-High-Performance-DDR-to-PL-Data-Processing-Pipeline-on-Zynq-7000/blob/main/top_axi_wrapper.v) | Top-level Verilog wrapper interfacing the PL processing core to AXI-Lite and AXI-Full interconnects. |
+| [`Zynq_DDR_BRAM_images/`](https://github.com/vijay-2020-vijay/SoC-Level-Virtual-Prototyping-High-Performance-DDR-to-PL-Data-Processing-Pipeline-on-Zynq-7000/tree/main/Zynq_DDR_BRAM_images) | Folder containing experimental execution logs, terminal verification traces, and GTKWave waveform dumps. |
 
 ---
 
