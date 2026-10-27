@@ -1,6 +1,6 @@
 <div align="center">
 
- 🌟🌟 SoC-Level Virtual Prototyping
+                    SoC-Level Virtual Prototyping
   High-Performance DDR ↔ PL Data Processing Pipeline on Zynq-7000
 
   *A Full-Stack Hardware/Software Co-Design Framework for AXI CDMA, Dual-Port BRAM & PS-PL Handshaking — Verified Without a Physical Board*
@@ -32,7 +32,7 @@ The entire system — ARM core, AXI fabric, and custom RTL — was verified **wi
 
 ---
 
-⭐⭐ Why This Project Matters
+⭐ Why This Project Matters
 
 Most student FPGA projects stop at "it compiles" or "LED blinks on board." This one goes several levels deeper:
 
@@ -88,7 +88,7 @@ The Vivado block design implements **four distinct planes**, each using the inte
 <br/><sub><b>Fig 2.</b> Full Vivado IP Integrator block design — PS, CDMA, interconnects, dual BRAM controllers, custom FSM</sub>
 </p>
 
- ◉◉ Control Plane — AXI4-Lite *(PS configures hardware)*
+ ⬜ Control Plane — AXI4-Lite *(PS configures hardware)*
 
 ```
 PS (M_AXI_GP0) → AXI SmartConnect → axi_cdma_0  (S_AXI_LITE)  — configure DMA transfers
