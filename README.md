@@ -1,6 +1,6 @@
 <div align="center">
 
-                    SoC-Level Virtual Prototyping
+                                                     🌟SoC-Level Virtual Prototyping
   High-Performance DDR ↔ PL Data Processing Pipeline on Zynq-7000
 
   *A Full-Stack Hardware/Software Co-Design Framework for AXI CDMA, Dual-Port BRAM & PS-PL Handshaking — Verified Without a Physical Board*
