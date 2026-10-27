@@ -68,7 +68,7 @@ DDR (0x10000000) ──(64-bit AXI CDMA)──> BRAM0 Port A ──(Dual-Port)�
 
 ---
 
- ◉◉ Pipeline Execution Stages
+ ⬜ Pipeline Execution Stages
 
 | Stage | Description |
 |---|---|
@@ -79,7 +79,7 @@ DDR (0x10000000) ──(64-bit AXI CDMA)──> BRAM0 Port A ──(Dual-Port)�
 
 ---
 
- ◉◉ Detailed Block-Level Architecture (Vivado IP Integrator)
+ ⬜ Detailed Block-Level Architecture (Vivado IP Integrator)
 
 The Vivado block design implements **four distinct planes**, each using the interconnect best suited to its purpose — this separation deliberately keeps AXI protocol overhead off the hot compute path.
 
@@ -97,7 +97,7 @@ PS (M_AXI_GP0) → AXI SmartConnect → axi_cdma_0  (S_AXI_LITE)  — configure 
 
 The embedded C application writes CDMA transfer descriptors (source/destination address, length, start bit) and toggles or polls GPIO bits. **No bulk data passes through this path.**
 
- ◉◉ Data Plane — AXI4-Full *(bulk memory-to-memory transfers)*
+ ⬜ Data Plane — AXI4-Full *(bulk memory-to-memory transfers)*
 
 ```
 axi_cdma_0 (M_AXI) → AXI Interconnect → M00_AXI → axi_bram_ctrl_0 → blk_mem_gen_0 (BRAM0, Port A)
@@ -107,7 +107,7 @@ axi_cdma_0 (M_AXI) → AXI Interconnect → M00_AXI → axi_bram_ctrl_0 → blk_
 
 AXI CDMA is the **only** bus master performing bulk transfers, moving data DDR↔BRAM0 and BRAM1↔DDR through the interconnect to three separate slave targets.
 
-### ◉◉ Direct RTL Access Plane — raw dual-port BRAM *(no AXI overhead)*
+⬜ Direct RTL Access Plane — raw dual-port BRAM *(no AXI overhead)*
 
 ```
 blk_mem_gen_0 (Port B) ⟷ PL_DDR_BRAM_v1_0   — reads BRAM0 directly (bram0_addrb, bram0_doutb, bram0_web...)
@@ -116,7 +116,7 @@ blk_mem_gen_1 (Port B) ⟷ PL_DDR_BRAM_v1_0   — writes BRAM1 directly (bram1_a
 
 Since each Block Memory Generator instance is **true dual-port**, Port A is dedicated to the AXI/CDMA side while Port B connects straight into the custom FSM. The processing core never has to speak AXI — it accesses memory like a plain register file, eliminating protocol overhead on the compute path.
 
- ◉◉ Handshake Plane — GPIO-based synchronization
+ ⬜ Handshake Plane — GPIO-based synchronization
 
 ```
 axi_gpio_0 GPIO  (5-bit out) → xlslice_0..4 → individual 1-bit control lines into PL_DDR_BRAM_v1_0:
@@ -129,7 +129,7 @@ PL_DDR_BRAM_v1_0 status outputs → ilconcat_0 (4-bit concat) → axi_gpio_0 GPI
 - **Slice blocks** (`xlslice_0`–`xlslice_4`) split the single 5-bit GPIO output bus into individual 1-bit trigger signals the FSM can consume separately.
 - **Inline Concat** (`ilconcat_0`) merges four separate 1-bit status flags from the FSM into a single 4-bit bus so the PS can read all status in one GPIO2 register access.
 
- ◉◉ Clock & Reset Distribution
+ ⬜ Clock & Reset Distribution
 
 ```
 PS FCLK_CLK0      → single clock domain driving every PL block (CDMA, interconnect, GPIO, BRAM controllers, custom FSM)
@@ -154,7 +154,7 @@ PS FCLK_RESET0_N  → proc_sys_reset_0 → synchronized resets (peripheral_reset
 | `PL_DDR_BRAM_v1_0` | Custom RTL — the processing FSM; reads BRAM0 / writes BRAM1 via direct Port B access |
 
 ---
- 🌟🌟 The PS–PL Handshake Protocol (Core Engineering Contribution)
+ 🌟 The PS–PL Handshake Protocol (Core Engineering Contribution)
 
 The custom `PL_DDR_BRAM` module implements a **5-state, level-sensitive finite-state machine** — deliberately avoiding interrupts and AXI-Stream in favor of a transparent, fully observable GPIO protocol that is easy to verify in waveform.
 
@@ -170,7 +170,7 @@ The custom `PL_DDR_BRAM` module implements a **5-state, level-sensitive finite-s
 
 ---
 
- 🌟🌟 Source Code Highlights
+ 🌟 Source Code Highlights
 
 <p align="center">
 <img src="https://raw.githubusercontent.com/vijay-2020-vijay/SoC-Level-Virtual-Prototyping-High-Performance-DDR-to-PL-Data-Processing-Pipeline-on-Zynq-7000/main/Zynq_DDR_BRAM_images2/vivado-pl-ddr-bram-verilog-source-code-editor.png" width="850"/>
@@ -187,7 +187,7 @@ The custom `PL_DDR_BRAM` module implements a **5-state, level-sensitive finite-s
 <br/><sub><b>Fig 4.</b> Vitis IDE — bare-metal C application driving CDMA and GPIO</sub>
 </p>
 
-**Bare-Metal C Application**
+⬜ Bare-Metal C Application**
 - `.incbin` assembler directive embeds the `.hex` dataset directly into the ELF's `.rodata` section at compile time — no filesystem needed in a bare-metal environment
 - `strtoull`-based hex parser loads 630 × 64-bit entries into DDR at runtime
 - Explicit cache management around every DMA transfer: `Xil_DCacheFlushRange()` before CDMA reads DDR, `Xil_DCacheInvalidateRange()` before the PS reads CDMA-written DDR
@@ -202,7 +202,7 @@ The custom `PL_DDR_BRAM` module implements a **5-state, level-sensitive finite-s
 - `for_Vivado.zip` — Complete Vivado block design (`.bd`), IP configuration parameters, and top-level synthesis source files.
 - `for_vitis/` — Platform board support packages (BSP), system project settings, and C application source code.
 
- Repository Files
+⬜ Repository Files
 
 | File Name | Description |
 |---|---|
@@ -217,7 +217,7 @@ The custom `PL_DDR_BRAM` module implements a **5-state, level-sensitive finite-s
 
 ---
 
- 🌟🌟 Prerequisites & Build Tools
+🌟 Prerequisites & Build Tools
 
 | Tool | Purpose |
 |---|---|
@@ -228,7 +228,7 @@ The custom `PL_DDR_BRAM` module implements a **5-state, level-sensitive finite-s
 
 ---
 
- 🌟🌟 Execution & Co-Simulation Setup
+🌟 Execution & Co-Simulation Setup
 
  1. Compile the Verilator Shared Model
 
@@ -320,7 +320,7 @@ start
 
 </details>
 
-> 🌟🌟 **Note:** Replace the two `@/path/to/...` entries in steps 8 and 9 with the absolute paths on your own machine before running the script.
+> 🌟 **Note:** Replace the two `@/path/to/...` entries in steps 8 and 9 with the absolute paths on your own machine before running the script.
 
  3. Compress & Analyze GTKWave Waveforms
 
