@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🚀 SoC-Level Virtual Prototyping
+# 🌟🌟 SoC-Level Virtual Prototyping
 ## High-Performance DDR ↔ PL Data Processing Pipeline on Zynq-7000
 
 ### *A Full-Stack Hardware/Software Co-Design Framework for AXI CDMA, Dual-Port BRAM & PS-PL Handshaking — Verified Without a Physical Board*
@@ -22,7 +22,7 @@
 
 ---
 
-## 📌 Overview
+## ⬜⬜ Overview
 
 This repository contains an **end-to-end SoC-level virtual prototyping framework** built around the Xilinx Zynq-7000 architecture. It demonstrates a complete **DDR ↔ Programmable-Logic (PL) data processing pipeline**, where 64-bit datasets are moved by an **AXI Central DMA (CDMA)** engine, buffered in **asymmetric dual-port Block RAM**, transformed by a **custom hand-written Verilog finite-state machine**, and synchronized with the **ARM Cortex-A9 Processing System** through a purpose-built **GPIO-based handshaking protocol**.
 
@@ -32,7 +32,7 @@ The entire system — ARM core, AXI fabric, and custom RTL — was verified **wi
 
 ---
 
-## 🧠 Why This Project Matters
+## ⭐⭐ Why This Project Matters
 
 Most student FPGA projects stop at "it compiles" or "LED blinks on board." This one goes several levels deeper:
 
@@ -69,7 +69,7 @@ DDR (0x10000000) ──(64-bit AXI CDMA)──> BRAM0 Port A ──(Dual-Port)�
 
 ---
 
-## 🔁 Pipeline Execution Stages
+## ◉◉ Pipeline Execution Stages
 
 | Stage | Description |
 |---|---|
@@ -80,7 +80,7 @@ DDR (0x10000000) ──(64-bit AXI CDMA)──> BRAM0 Port A ──(Dual-Port)�
 
 ---
 
-## 🧩 Detailed Block-Level Architecture (Vivado IP Integrator)
+## ◉◉ Detailed Block-Level Architecture (Vivado IP Integrator)
 
 The Vivado block design implements **four distinct planes**, each using the interconnect best suited to its purpose — this separation deliberately keeps AXI protocol overhead off the hot compute path.
 
@@ -89,7 +89,7 @@ The Vivado block design implements **four distinct planes**, each using the inte
 <br/><sub><b>Fig 2.</b> Full Vivado IP Integrator block design — PS, CDMA, interconnects, dual BRAM controllers, custom FSM</sub>
 </p>
 
-### 1️⃣ Control Plane — AXI4-Lite *(PS configures hardware)*
+### ◉◉ Control Plane — AXI4-Lite *(PS configures hardware)*
 
 ```
 PS (M_AXI_GP0) → AXI SmartConnect → axi_cdma_0  (S_AXI_LITE)  — configure DMA transfers
@@ -98,7 +98,7 @@ PS (M_AXI_GP0) → AXI SmartConnect → axi_cdma_0  (S_AXI_LITE)  — configure 
 
 The embedded C application writes CDMA transfer descriptors (source/destination address, length, start bit) and toggles or polls GPIO bits. **No bulk data passes through this path.**
 
-### 2️⃣ Data Plane — AXI4-Full *(bulk memory-to-memory transfers)*
+### ◉◉ Data Plane — AXI4-Full *(bulk memory-to-memory transfers)*
 
 ```
 axi_cdma_0 (M_AXI) → AXI Interconnect → M00_AXI → axi_bram_ctrl_0 → blk_mem_gen_0 (BRAM0, Port A)
@@ -108,7 +108,7 @@ axi_cdma_0 (M_AXI) → AXI Interconnect → M00_AXI → axi_bram_ctrl_0 → blk_
 
 AXI CDMA is the **only** bus master performing bulk transfers, moving data DDR↔BRAM0 and BRAM1↔DDR through the interconnect to three separate slave targets.
 
-### 3️⃣ Direct RTL Access Plane — raw dual-port BRAM *(no AXI overhead)*
+### ◉◉ Direct RTL Access Plane — raw dual-port BRAM *(no AXI overhead)*
 
 ```
 blk_mem_gen_0 (Port B) ⟷ PL_DDR_BRAM_v1_0   — reads BRAM0 directly (bram0_addrb, bram0_doutb, bram0_web...)
@@ -117,7 +117,7 @@ blk_mem_gen_1 (Port B) ⟷ PL_DDR_BRAM_v1_0   — writes BRAM1 directly (bram1_a
 
 Since each Block Memory Generator instance is **true dual-port**, Port A is dedicated to the AXI/CDMA side while Port B connects straight into the custom FSM. The processing core never has to speak AXI — it accesses memory like a plain register file, eliminating protocol overhead on the compute path.
 
-### 4️⃣ Handshake Plane — GPIO-based synchronization
+### ◉◉ Handshake Plane — GPIO-based synchronization
 
 ```
 axi_gpio_0 GPIO  (5-bit out) → xlslice_0..4 → individual 1-bit control lines into PL_DDR_BRAM_v1_0:
@@ -130,7 +130,7 @@ PL_DDR_BRAM_v1_0 status outputs → ilconcat_0 (4-bit concat) → axi_gpio_0 GPI
 - **Slice blocks** (`xlslice_0`–`xlslice_4`) split the single 5-bit GPIO output bus into individual 1-bit trigger signals the FSM can consume separately.
 - **Inline Concat** (`ilconcat_0`) merges four separate 1-bit status flags from the FSM into a single 4-bit bus so the PS can read all status in one GPIO2 register access.
 
-### 5️⃣ Clock & Reset Distribution
+### ◉◉ Clock & Reset Distribution
 
 ```
 PS FCLK_CLK0      → single clock domain driving every PL block (CDMA, interconnect, GPIO, BRAM controllers, custom FSM)
@@ -156,7 +156,7 @@ PS FCLK_RESET0_N  → proc_sys_reset_0 → synchronized resets (peripheral_reset
 
 ---
 
-## ⚙️ The PS–PL Handshake Protocol (Core Engineering Contribution)
+## 🌟🌟 The PS–PL Handshake Protocol (Core Engineering Contribution)
 
 The custom `PL_DDR_BRAM` module implements a **5-state, level-sensitive finite-state machine** — deliberately avoiding interrupts and AXI-Stream in favor of a transparent, fully observable GPIO protocol that is easy to verify in waveform.
 
@@ -172,7 +172,7 @@ The custom `PL_DDR_BRAM` module implements a **5-state, level-sensitive finite-s
 
 ---
 
-## 💻 Source Code Highlights
+## 🌟🌟 Source Code Highlights
 
 <p align="center">
 <img src="https://raw.githubusercontent.com/vijay-2020-vijay/SoC-Level-Virtual-Prototyping-High-Performance-DDR-to-PL-Data-Processing-Pipeline-on-Zynq-7000/main/Zynq_DDR_BRAM_images2/vivado-pl-ddr-bram-verilog-source-code-editor.png" width="850"/>
@@ -220,7 +220,7 @@ The custom `PL_DDR_BRAM` module implements a **5-state, level-sensitive finite-s
 
 ---
 
-## 🛠️ Prerequisites & Build Tools
+## 🌟🌟 Prerequisites & Build Tools
 
 | Tool | Purpose |
 |---|---|
@@ -231,7 +231,7 @@ The custom `PL_DDR_BRAM` module implements a **5-state, level-sensitive finite-s
 
 ---
 
-## 🚦 Execution & Co-Simulation Setup
+## 🌟🌟 Execution & Co-Simulation Setup
 
 ### 1. Compile the Verilator Shared Model
 
@@ -323,7 +323,7 @@ start
 
 </details>
 
-> ⚠️ **Note:** Replace the two `@/path/to/...` entries in steps 8 and 9 with the absolute paths on your own machine before running the script.
+> 🌟🌟 **Note:** Replace the two `@/path/to/...` entries in steps 8 and 9 with the absolute paths on your own machine before running the script.
 
 ### 3. Compress & Analyze GTKWave Waveforms
 
@@ -411,11 +411,11 @@ This section showcases simulation logs, co-simulation UART output, and GTKWave w
 <tr>
 <td width="50%" align="center">
 <img src="https://raw.githubusercontent.com/vijay-2020-vijay/SoC-Level-Virtual-Prototyping-High-Performance-DDR-to-PL-Data-Processing-Pipeline-on-Zynq-7000/main/Zynq_DDR_BRAM_images2/renode-successful-cosimulation-uart-output.png"/>
-<br/><sub><b>✅ Successful Co-Simulation</b> — full pipeline log: hex load → Stage 1 → Stage 2 → Stage 3 → verified results in DDR</sub>
+<br/><sub><b> ◉ Successful Co-Simulation</b> — full pipeline log: hex load → Stage 1 → Stage 2 → Stage 3 → verified results in DDR</sub>
 </td>
 <td width="50%" align="center">
 <img src="https://raw.githubusercontent.com/vijay-2020-vijay/SoC-Level-Virtual-Prototyping-High-Performance-DDR-to-PL-Data-Processing-Pipeline-on-Zynq-7000/main/Zynq_DDR_BRAM_images2/renode-cosimulation-timeout-error-uart-log.png"/>
-<br/><sub><b>⚠️ Timeout/Debug Log</b> — an early-stage handshake timeout captured during bring-up, kept here to show real debugging history, not just the final success case</sub>
+<br/><sub><b> ◉ Timeout/Debug Log</b> — an early-stage handshake timeout captured during bring-up, kept here to show real debugging history, not just the final success case</sub>
 </td>
 </tr>
 </table>
@@ -442,7 +442,7 @@ This section showcases simulation logs, co-simulation UART output, and GTKWave w
 </tr>
 </table>
 
-### ✅ Key Verification Highlights
+### ◉◉ Key Verification Highlights
 
 - **CDMA Transfer Validation** — Confirmed 64-bit transfers from DDR (`0x10000000`) into BRAM0, and from BRAM1 back into DDR (`0x10010000`).
 - **PL State Machine Transitions** — Observed continuous, correct execution through the state loop (`s0 → s1 → s2 → s3 → s4`), each transition driven by the expected AXI GPIO pulse.
@@ -465,13 +465,13 @@ This section showcases simulation logs, co-simulation UART output, and GTKWave w
 
 ---
 
-## 🧰 Tech Stack Summary
+## ◉◉ Tech Stack Summary
 
 `Verilog RTL` · `Xilinx Vivado` · `Xilinx Vitis` · `AXI4 / AXI4-Lite` · `AXI CDMA` · `Dual-Port BRAM` · `AXI GPIO` · `Verilator` · `Renode` · `C (Bare-Metal)` · `GTKWave` · `CMake`
 
 ---
 
-## 🤝 Contributing
+## ◉◉ Contributing
 
 Issues, suggestions, and pull requests are welcome. If you spot a bug in the handshake protocol, find a cleaner way to pipeline the BRAM transform, or want to extend this to more BRAM stages or a different data transform — feel free to open an issue.
 
@@ -493,9 +493,9 @@ This project is released under the **MIT License** — free to use, modify, and 
 **Verilog • SystemVerilog • FPGA • SoC PL+PS Integration**
 *Creator of a Full VGG-16 Hardware Accelerator & a RISC-V Core | UVM Verification & IP Integration*
 
-📧 [rabisankarmaity8250@gmail.com](mailto:rabisankarmaity8250@gmail.com)
-🔗 [LinkedIn — rabisankar-maity](https://www.linkedin.com/in/rabisankar-maity-98572b1b7/)
-🐙 [GitHub — vijay-2020-vijay](https://github.com/vijay-2020-vijay)
+◉◉ [rabisankarmaity8250@gmail.com](mailto:rabisankarmaity8250@gmail.com)
+◉◉ [LinkedIn — rabisankar-maity](https://www.linkedin.com/in/rabisankar-maity-98572b1b7/)
+◉◉ [GitHub — vijay-2020-vijay](https://github.com/vijay-2020-vijay)
 
 <br/>
 
