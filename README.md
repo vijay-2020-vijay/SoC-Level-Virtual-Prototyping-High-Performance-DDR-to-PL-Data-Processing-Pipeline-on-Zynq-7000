@@ -226,7 +226,7 @@ sysbus LoadELF @/path/to/DDR_BRAM_DDR_2_2/Debug/DDR_BRAM_DDR_2_2.elf
 start
 ```
 
-> ⚠️ **Note:** Replace the two `@/path/to/...` entries in steps 8 and 9 with the absolute paths on your own machine before running the script.
+> 🌟 **Note:** Replace the two `@/path/to/...` entries in steps 8 and 9 with the absolute paths on your own machine before running the script.
 
 ### 3. Compress & Analyze GTKWave Waveforms
 
@@ -242,7 +242,7 @@ gtkwave simx.fst &
 
 ---
 
-## 📊 Experimental Results & Verification
+## 🧮 Experimental Results & Verification
 
 This section showcases simulation logs and GTKWave trace outputs demonstrating hardware state transitions and DDR memory transactions.
 
@@ -270,6 +270,6 @@ This section showcases simulation logs and GTKWave trace outputs demonstrating h
 
 ### Key Verification Highlights
 
-- ✅ **CDMA Transfer Validation** — Confirmed 64-bit transfers from DDR (`0x10000000`) into BRAM0.
-- ✅ **PL State Machine Transitions** — Observed continuous execution through state loop (`s0` → `s4`) driven by AXI GPIO pulses.
-- ✅ **Data Integrity Check** — Verified transformed data values (`0x...DEADBEEF` / incremented hex strings) stored in DDR target address (`0x10010000`).
+- ✨ **CDMA Transfer Validation** — Confirmed 64-bit transfers from DDR (`0x10000000`) into BRAM0.
+- ✨ **PL State Machine Transitions** — Observed continuous execution through state loop (`s0` → `s4`) driven by AXI GPIO pulses.
+- ✨ **Data Integrity Check** — Verified transformed data values (`0x...DEADBEEF` / incremented hex strings) stored in DDR target address (`0x10010000`).
