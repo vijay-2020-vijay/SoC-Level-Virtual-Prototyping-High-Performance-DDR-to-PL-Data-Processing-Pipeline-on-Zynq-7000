@@ -1,9 +1,9 @@
 <div align="center">
 
-# 🌟🌟 SoC-Level Virtual Prototyping
-## High-Performance DDR ↔ PL Data Processing Pipeline on Zynq-7000
+ 🌟🌟 SoC-Level Virtual Prototyping
+  High-Performance DDR ↔ PL Data Processing Pipeline on Zynq-7000
 
-### *A Full-Stack Hardware/Software Co-Design Framework for AXI CDMA, Dual-Port BRAM & PS-PL Handshaking — Verified Without a Physical Board*
+  *A Full-Stack Hardware/Software Co-Design Framework for AXI CDMA, Dual-Port BRAM & PS-PL Handshaking — Verified Without a Physical Board*
 
 <br/>
 
@@ -22,7 +22,7 @@
 
 ---
 
-## ⬜⬜ Overview
+ ⬜⬜ Overview
 
 This repository contains an **end-to-end SoC-level virtual prototyping framework** built around the Xilinx Zynq-7000 architecture. It demonstrates a complete **DDR ↔ Programmable-Logic (PL) data processing pipeline**, where 64-bit datasets are moved by an **AXI Central DMA (CDMA)** engine, buffered in **asymmetric dual-port Block RAM**, transformed by a **custom hand-written Verilog finite-state machine**, and synchronized with the **ARM Cortex-A9 Processing System** through a purpose-built **GPIO-based handshaking protocol**.
 
@@ -32,7 +32,7 @@ The entire system — ARM core, AXI fabric, and custom RTL — was verified **wi
 
 ---
 
-## ⭐⭐ Why This Project Matters
+⭐⭐ Why This Project Matters
 
 Most student FPGA projects stop at "it compiles" or "LED blinks on board." This one goes several levels deeper:
 
@@ -46,8 +46,7 @@ Most student FPGA projects stop at "it compiles" or "LED blinks on board." This 
 | **Debugging RTL with no board and no JTAG/ILA** | Full GTKWave waveform capture of every AXI, BRAM, and handshake signal — VCD converted to compact FST for fast loading |
 
 ---
-
-## 🏗️ System Architecture & Data Flow
+ 🏗️ System Architecture & Data Flow
 
 The system coordinates memory transfers and hardware acceleration across the Zynq **Processing System** (PS — ARM Cortex-A9) and **Programmable Logic** (PL):
 
@@ -69,7 +68,7 @@ DDR (0x10000000) ──(64-bit AXI CDMA)──> BRAM0 Port A ──(Dual-Port)�
 
 ---
 
-## ◉◉ Pipeline Execution Stages
+ ◉◉ Pipeline Execution Stages
 
 | Stage | Description |
 |---|---|
@@ -80,7 +79,7 @@ DDR (0x10000000) ──(64-bit AXI CDMA)──> BRAM0 Port A ──(Dual-Port)�
 
 ---
 
-## ◉◉ Detailed Block-Level Architecture (Vivado IP Integrator)
+ ◉◉ Detailed Block-Level Architecture (Vivado IP Integrator)
 
 The Vivado block design implements **four distinct planes**, each using the interconnect best suited to its purpose — this separation deliberately keeps AXI protocol overhead off the hot compute path.
 
@@ -89,7 +88,7 @@ The Vivado block design implements **four distinct planes**, each using the inte
 <br/><sub><b>Fig 2.</b> Full Vivado IP Integrator block design — PS, CDMA, interconnects, dual BRAM controllers, custom FSM</sub>
 </p>
 
-### ◉◉ Control Plane — AXI4-Lite *(PS configures hardware)*
+ ◉◉ Control Plane — AXI4-Lite *(PS configures hardware)*
 
 ```
 PS (M_AXI_GP0) → AXI SmartConnect → axi_cdma_0  (S_AXI_LITE)  — configure DMA transfers
@@ -98,7 +97,7 @@ PS (M_AXI_GP0) → AXI SmartConnect → axi_cdma_0  (S_AXI_LITE)  — configure 
 
 The embedded C application writes CDMA transfer descriptors (source/destination address, length, start bit) and toggles or polls GPIO bits. **No bulk data passes through this path.**
 
-### ◉◉ Data Plane — AXI4-Full *(bulk memory-to-memory transfers)*
+ ◉◉ Data Plane — AXI4-Full *(bulk memory-to-memory transfers)*
 
 ```
 axi_cdma_0 (M_AXI) → AXI Interconnect → M00_AXI → axi_bram_ctrl_0 → blk_mem_gen_0 (BRAM0, Port A)
@@ -117,7 +116,7 @@ blk_mem_gen_1 (Port B) ⟷ PL_DDR_BRAM_v1_0   — writes BRAM1 directly (bram1_a
 
 Since each Block Memory Generator instance is **true dual-port**, Port A is dedicated to the AXI/CDMA side while Port B connects straight into the custom FSM. The processing core never has to speak AXI — it accesses memory like a plain register file, eliminating protocol overhead on the compute path.
 
-### ◉◉ Handshake Plane — GPIO-based synchronization
+ ◉◉ Handshake Plane — GPIO-based synchronization
 
 ```
 axi_gpio_0 GPIO  (5-bit out) → xlslice_0..4 → individual 1-bit control lines into PL_DDR_BRAM_v1_0:
@@ -130,7 +129,7 @@ PL_DDR_BRAM_v1_0 status outputs → ilconcat_0 (4-bit concat) → axi_gpio_0 GPI
 - **Slice blocks** (`xlslice_0`–`xlslice_4`) split the single 5-bit GPIO output bus into individual 1-bit trigger signals the FSM can consume separately.
 - **Inline Concat** (`ilconcat_0`) merges four separate 1-bit status flags from the FSM into a single 4-bit bus so the PS can read all status in one GPIO2 register access.
 
-### ◉◉ Clock & Reset Distribution
+ ◉◉ Clock & Reset Distribution
 
 ```
 PS FCLK_CLK0      → single clock domain driving every PL block (CDMA, interconnect, GPIO, BRAM controllers, custom FSM)
@@ -138,7 +137,7 @@ PS FCLK_RESET0_N  → proc_sys_reset_0 → synchronized resets (peripheral_reset
                                         fanned out to every IP's reset pin
 ```
 
-### 📋 IP Summary Table
+ 📋 IP Summary Table
 
 | IP Block | Role |
 |---|---|
@@ -155,8 +154,7 @@ PS FCLK_RESET0_N  → proc_sys_reset_0 → synchronized resets (peripheral_reset
 | `PL_DDR_BRAM_v1_0` | Custom RTL — the processing FSM; reads BRAM0 / writes BRAM1 via direct Port B access |
 
 ---
-
-## 🌟🌟 The PS–PL Handshake Protocol (Core Engineering Contribution)
+ 🌟🌟 The PS–PL Handshake Protocol (Core Engineering Contribution)
 
 The custom `PL_DDR_BRAM` module implements a **5-state, level-sensitive finite-state machine** — deliberately avoiding interrupts and AXI-Stream in favor of a transparent, fully observable GPIO protocol that is easy to verify in waveform.
 
@@ -172,7 +170,7 @@ The custom `PL_DDR_BRAM` module implements a **5-state, level-sensitive finite-s
 
 ---
 
-## 🌟🌟 Source Code Highlights
+ 🌟🌟 Source Code Highlights
 
 <p align="center">
 <img src="https://raw.githubusercontent.com/vijay-2020-vijay/SoC-Level-Virtual-Prototyping-High-Performance-DDR-to-PL-Data-Processing-Pipeline-on-Zynq-7000/main/Zynq_DDR_BRAM_images2/vivado-pl-ddr-bram-verilog-source-code-editor.png" width="850"/>
@@ -197,15 +195,14 @@ The custom `PL_DDR_BRAM` module implements a **5-state, level-sensitive finite-s
 
 ---
 
-## 📁 Repository Structure & File Details
-
-### Complete Archives
+ 📁 Repository Structure & File Details
+ Complete Archives
 
 - **Google Drive (Full Project Package):** [📁 Download Here](https://drive.google.com/file/d/1ZAVyFyPXAbd8olpM0ASr3neKbUt1IoKs/view?usp=sharing)
 - `for_Vivado.zip` — Complete Vivado block design (`.bd`), IP configuration parameters, and top-level synthesis source files.
 - `for_vitis/` — Platform board support packages (BSP), system project settings, and C application source code.
 
-### Repository Files
+ Repository Files
 
 | File Name | Description |
 |---|---|
@@ -220,7 +217,7 @@ The custom `PL_DDR_BRAM` module implements a **5-state, level-sensitive finite-s
 
 ---
 
-## 🌟🌟 Prerequisites & Build Tools
+ 🌟🌟 Prerequisites & Build Tools
 
 | Tool | Purpose |
 |---|---|
@@ -231,9 +228,9 @@ The custom `PL_DDR_BRAM` module implements a **5-state, level-sensitive finite-s
 
 ---
 
-## 🌟🌟 Execution & Co-Simulation Setup
+ 🌟🌟 Execution & Co-Simulation Setup
 
-### 1. Compile the Verilator Shared Model
+ 1. Compile the Verilator Shared Model
 
 ```bash
 mkdir build && cd build
@@ -241,13 +238,13 @@ cmake ..
 make -j$(nproc)
 ```
 
-### 2. Launch Renode Co-Simulation
+ 2. Launch Renode Co-Simulation
 
 ```bash
 renode project_zynq_DDR_BRAM.resc
 ```
 
-#### 📜 `project_zynq_DDR_BRAM.resc` — Script Walkthrough
+ 📜 `project_zynq_DDR_BRAM.resc` — Script Walkthrough
 
 The Renode script boots a virtual Zynq-7000 platform, attaches the Verilator-compiled PL model as a co-simulated peripheral, loads the bare-metal application, and starts execution.
 
@@ -325,7 +322,7 @@ start
 
 > 🌟🌟 **Note:** Replace the two `@/path/to/...` entries in steps 8 and 9 with the absolute paths on your own machine before running the script.
 
-### 3. Compress & Analyze GTKWave Waveforms
+ 3. Compress & Analyze GTKWave Waveforms
 
 To prevent UI performance bottlenecks on large simulation files, convert raw VCD traces into compressed FST format prior to viewing:
 
@@ -339,11 +336,11 @@ gtkwave simx.fst &
 
 ---
 
-## 🖼️ Visual Design Walkthrough
+ 🖼️ Visual Design Walkthrough
 
 A complete visual trail of the project — from PS configuration, through RTL schematics and synthesis results, to full-chip implementation.
 
-### Zynq PS Configuration & Address Map
+ ⬜Zynq PS Configuration & Address Map
 
 <table>
 <tr>
@@ -358,7 +355,7 @@ A complete visual trail of the project — from PS configuration, through RTL sc
 </tr>
 </table>
 
-### RTL Schematics & FPGA Floorplan
+⬜ RTL Schematics & FPGA Floorplan
 
 <table>
 <tr>
@@ -377,7 +374,7 @@ A complete visual trail of the project — from PS configuration, through RTL sc
 </tr>
 </table>
 
-### Implementation Reports
+⬜ Implementation Reports
 
 <table>
 <tr>
@@ -394,18 +391,18 @@ A complete visual trail of the project — from PS configuration, through RTL sc
 
 ---
 
-## 🧮 Experimental Results & Verification
+ 🧮 Experimental Results & Verification
 
 This section showcases simulation logs, co-simulation UART output, and GTKWave waveform traces demonstrating hardware state transitions and DDR memory transactions — the actual proof that the pipeline works end to end.
 
-### Vivado Behavioral Simulation
+⬜ Vivado Behavioral Simulation
 
 <p align="center">
 <img src="https://raw.githubusercontent.com/vijay-2020-vijay/SoC-Level-Virtual-Prototyping-High-Performance-DDR-to-PL-Data-Processing-Pipeline-on-Zynq-7000/main/Zynq_DDR_BRAM_images2/vivado-simulation-waveform-bram-states.png" width="850"/>
 <br/><sub><b>Fig 5.</b> Vivado behavioral simulation — FSM state transitions and BRAM port activity, verified in isolation before co-simulation</sub>
 </p>
 
-### Renode Co-Simulation — UART Console Output
+⬜ Renode Co-Simulation — UART Console Output
 
 <table>
 <tr>
@@ -422,7 +419,7 @@ This section showcases simulation logs, co-simulation UART output, and GTKWave w
 
 > Including a captured *failure* log alongside the final passing log is intentional — it shows the actual debug cycle: the bounded-retry timeout mechanism in `poll_gpio_until_set()` was added specifically in response to hangs like this one, and this screenshot is the evidence trail for that design decision.
 
-### GTKWave Waveform Verification
+⬜ GTKWave Waveform Verification
 
 <p align="center">
 <img src="https://raw.githubusercontent.com/vijay-2020-vijay/SoC-Level-Virtual-Prototyping-High-Performance-DDR-to-PL-Data-Processing-Pipeline-on-Zynq-7000/main/Zynq_DDR_BRAM_images2/gtkwave-full-timeline-simulation-waveform.png" width="850"/>
@@ -442,7 +439,7 @@ This section showcases simulation logs, co-simulation UART output, and GTKWave w
 </tr>
 </table>
 
-### ◉◉ Key Verification Highlights
+⬜ Key Verification Highlights
 
 - **CDMA Transfer Validation** — Confirmed 64-bit transfers from DDR (`0x10000000`) into BRAM0, and from BRAM1 back into DDR (`0x10010000`).
 - **PL State Machine Transitions** — Observed continuous, correct execution through the state loop (`s0 → s1 → s2 → s3 → s4`), each transition driven by the expected AXI GPIO pulse.
@@ -452,7 +449,7 @@ This section showcases simulation logs, co-simulation UART output, and GTKWave w
 
 ---
 
-## 🗺️ Repository File Index (Quick Links)
+ 🗺️ Repository File Index (Quick Links)
 
 | Category | Files |
 |---|---|
@@ -465,29 +462,29 @@ This section showcases simulation logs, co-simulation UART output, and GTKWave w
 
 ---
 
-## ◉◉ Tech Stack Summary
+ ⬜ Tech Stack Summary
 
 `Verilog RTL` · `Xilinx Vivado` · `Xilinx Vitis` · `AXI4 / AXI4-Lite` · `AXI CDMA` · `Dual-Port BRAM` · `AXI GPIO` · `Verilator` · `Renode` · `C (Bare-Metal)` · `GTKWave` · `CMake`
 
 ---
 
-## ◉◉ Contributing
+ ⬜ Contributing
 
 Issues, suggestions, and pull requests are welcome. If you spot a bug in the handshake protocol, find a cleaner way to pipeline the BRAM transform, or want to extend this to more BRAM stages or a different data transform — feel free to open an issue.
 
 ---
 
-## 📄 License
+ 📄 License
 
 This project is released under the **MIT License** — free to use, modify, and build upon with attribution.
 
 ---
 
-## 👤 About the Author
+ 👤 About the Author
 
 <div align="center">
 
-### Rabisankar Maity
+ Rabisankar Maity
 
 **RTL Design Engineer** | M.Tech VLSI & Nanoelectronics @ IIT Guwahati '26 *(GATE AIR 318)*
 **Verilog • SystemVerilog • FPGA • SoC PL+PS Integration**
